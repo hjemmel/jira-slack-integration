@@ -11,18 +11,12 @@ interface Fields {
 }
 
 interface Changelog {
-  id: string;
   items: Items[];
 }
 
 export interface User {
   displayName: string;
   emailAddress: string;
-  avatarUrls: AvatarURL;
-}
-
-export interface AvatarURL {
-  [key: string]: string;
 }
 
 interface Items {

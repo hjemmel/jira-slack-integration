@@ -1,74 +1,106 @@
 openapi: 3.0.1
 info:
-  title: Node+Typescript
-  description: Node TypeScript
+  title: Jira Slack integration
+  description: Small application that notify slack when an issue is added to the sprint
   version: 1.0.0
 servers:
-- url: /api/v1
+  - url: /api/v1
 tags:
-- name: Examples
-  description: Simple example endpoints
-- name: Specification
-  description: The swagger API specification
+  - name: Webhook
+    description: Endpoint that receive a webhook from Jira
+  - name: Specification
+    description: The swagger API specification
 paths:
-  /examples:
-    get:
-      tags:
-      - Examples
-      description: Fetch all examples
-      responses:
-        200:
-          description: Returns all examples
-          content: {}
+  /webhook:
     post:
       tags:
-      - Examples
+        - Webhook
       description: Create a new example
       requestBody:
         description: an example
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ExampleBody'
+              $ref: '#/components/schemas/JiraIssue'
         required: true
       responses:
         200:
-          description: Returns all examples
+          description: Message sent to slack
           content: {}
-  /examples/{id}:
-    get:
-      tags:
-      - Examples
-      parameters:
-      - name: id
-        in: path
-        description: The id of the example to retrieve
-        required: true
-        schema:
-          type: integer
-      responses:
-        200:
-          description: Return the example with the specified id
-          content: {}
-        404:
-          description: Example not found
+        400:
+          description: Error happend when trying to parse issue
           content: {}
   /spec:
     get:
       tags:
-      - Specification
+        - Specification
       responses:
         200:
           description: Return the API specification
           content: {}
 components:
   schemas:
-    ExampleBody:
-      title: example
+    JiraIssue:
+      title: jiraissue
       required:
-      - name
+        - user
+        - issue
       type: object
       properties:
-        name:
+        user:
+          $ref: '#/components/schemas/User'
+        issue:
+          $ref: '#/components/schemas/Issue'
+        changelog:
+          $ref: '#/components/schemas/Changelog'
+    User:
+      title: user
+      required:
+        - displayName
+        - emailAddress
+      type: object
+      properties:
+        displayName:
           type: string
-          example: no_stress
+          example: Rick Sanchez
+        emailAddress:
+          type: string
+          format: email
+          example: rick@sanchez.com
+    Issue:
+      title: issue
+      required:
+        - key
+        - fields
+      type: object
+      properties:
+        key:
+          type: string
+          example: C-137
+        fields:
+          type: object
+    Changelog:
+      title: Changelog
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              field:
+                type: string
+                example: Sprint
+              fieldtype:
+                type: string
+                example: Custom
+              from:
+                type: string
+              fromString:
+                type: string
+              to:
+                type: string
+                example: "123"
+              toString:
+                type: string
+                example: "SP1"

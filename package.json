@@ -10,7 +10,7 @@
     "compile": "ts-node build.ts && tsc",
     "dev": "cross-env NODE_ENV=development tsnd server/index.ts | pino-pretty",
     "dev:debug": "cross-env NODE_ENV=development tsnd --inspect -- server/index.ts | pino-pretty",
-    "test:jest": "cross-env NODE_ENV=test jest",
+    "test:jest": "cross-env NODE_ENV=test jest  --colors",
     "test": "mocha test/**/*.ts --exit",
     "test:debug": "mocha --inspect-brk test/**/*.ts --exit",
     "lint": "eslint 'server/**/*.ts'"
